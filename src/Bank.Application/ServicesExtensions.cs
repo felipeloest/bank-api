@@ -10,6 +10,7 @@ namespace Bank.Application
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IResetAppService, ResetAppService>();
+            services.AddScoped<IAccountAppService, AccountAppService>();
         }
     }
 }
