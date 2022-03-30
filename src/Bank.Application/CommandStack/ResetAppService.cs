@@ -6,7 +6,7 @@ namespace Bank.Application.CommandStack
     {
         public Task ResetAsync()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

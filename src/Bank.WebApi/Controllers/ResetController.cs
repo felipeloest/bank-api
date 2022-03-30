@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bank.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ResetController : ControllerBase
     {
@@ -15,12 +15,12 @@ namespace Bank.WebApi.Controllers
             _appService = appService ?? throw new ArgumentNullException(nameof(appService));
         }
 
-        // POST api/<ResetController>
         [HttpPost]
+        [Produces("text/plain")]
         public async Task<IActionResult> Post()
         {
             await _appService.ResetAsync();
-            return Ok();
+            return Ok("OK");
         }
     }
 }
