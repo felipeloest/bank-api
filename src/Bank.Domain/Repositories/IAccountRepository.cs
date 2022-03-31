@@ -8,12 +8,12 @@ namespace Bank.Domain.Repositories
 {
     public interface IAccountRepository
     {
-        Task<Account> FindAsync(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Account?> FindAsync(int id);
 
-        Task<IList<Account>> GetAllAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<Account>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Task SaveAsync(Account aggregate, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveAsync(Account aggregate, CancellationToken cancellationToken = default);
 
-        Task UpdateAsync(Account aggregate, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateAsync(Account aggregate);
     }
 }

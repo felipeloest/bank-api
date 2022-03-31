@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bank.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Bank.Data
         public Context(DbContextOptions<Context> options)
             : base(options)
         { }
+
+        public DbSet<Account> Accounts { get; set; }
     }
 }

@@ -19,15 +19,15 @@ namespace Bank.Data.Domain
             DbSet = Context.Set<Account>();
         }
 
-        public virtual async Task<Account> FindAsync(int id, CancellationToken cancellationToken = default)
+        public virtual async Task<Account?> FindAsync(int id)
         {
             try
             {
-                return await DbSet.FindAsync(id, cancellationToken);
+                return await DbSet.FindAsync(id);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Erro ao consultar objeto no repositório");
+                Logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -40,12 +40,12 @@ namespace Bank.Data.Domain
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Erro ao salvar objeto no repositório");
+                Logger.LogError(ex, ex.Message);
                 throw;
             }
         }
 
-        public virtual Task UpdateAsync(Account aggregate, CancellationToken cancellationToken = default)
+        public virtual Task UpdateAsync(Account aggregate)
         {
             try
             {
@@ -54,14 +54,14 @@ namespace Bank.Data.Domain
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Erro ao atualizar objeto no repositório");
+                Logger.LogError(ex, ex.Message);
                 throw;
             }
         }
 
-        public Task DeleteAsync(Account aggregate, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(Account aggregate)
         {
-            Context.Set<Account>().Remove(aggregate);
+            DbSet.Remove(aggregate);
             return Task.CompletedTask;
         }
 

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bank.ApiModels\Bank.ApiModels.csproj" />
+    <ProjectReference Include="..\Bank.Domain\Bank.Domain.csproj" />
   </ItemGroup>
 
 </Project>
