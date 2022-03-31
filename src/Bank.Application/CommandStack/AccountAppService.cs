@@ -1,4 +1,4 @@
-﻿using Bank.ApiModels.QueryModels;
+﻿using Bank.ApiModels.QueryModels.Balance;
 using Bank.Application.CommandStack.Interfaces;
 
 namespace Bank.Application.CommandStack

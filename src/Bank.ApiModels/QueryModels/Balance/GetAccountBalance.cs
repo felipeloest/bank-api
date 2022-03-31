@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bank.ApiModels.QueryModels
+namespace Bank.ApiModels.QueryModels.Balance
 {
     public class GetAccountBalance
     {
