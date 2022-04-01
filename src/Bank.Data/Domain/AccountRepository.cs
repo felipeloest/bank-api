@@ -8,8 +8,8 @@ namespace Bank.Data.Domain
     public class AccountRepository : IAccountRepository
     {
         protected readonly ILogger<AccountRepository> _logger;
-        protected Context _context { get; }
-        protected DbSet<Account> _dbSet { get; }
+        private readonly Context _context;
+        private readonly DbSet<Account> _dbSet;
 
 
         public AccountRepository(Context context, ILogger<AccountRepository> logger)
@@ -32,12 +32,12 @@ namespace Bank.Data.Domain
             }
         }
 
-        public async Task<int> CreateAsync(Account aggregate, CancellationToken cancellationToken = default)
+        public async Task<bool> CreateAsync(Account aggregate, CancellationToken cancellationToken = default)
         {
             try
             {
                 await _dbSet.AddAsync(aggregate, cancellationToken);
-                return await _context.SaveChangesAsync(cancellationToken);
+                return await _context.SaveChangesAsync(cancellationToken) > 0;
             }
             catch (Exception ex)
             {
@@ -46,12 +46,12 @@ namespace Bank.Data.Domain
             }
         }
 
-        public async Task<int> UpdateAsync(Account aggregate, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateAsync(Account aggregate, CancellationToken cancellationToken = default)
         {
             try
             {
                 _dbSet.Update(aggregate);
-                return await _context.SaveChangesAsync(cancellationToken);
+                return await _context.SaveChangesAsync(cancellationToken) > 0;
             }
             catch (Exception ex)
             {
@@ -60,12 +60,12 @@ namespace Bank.Data.Domain
             }
         }
 
-        public async Task<int> Reset(CancellationToken cancellationToken = default)
+        public async Task<bool> Reset(CancellationToken cancellationToken = default)
         {
             var items = await _dbSet.ToListAsync();
             _dbSet.RemoveRange(items);
 
-            return await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
     }
 }

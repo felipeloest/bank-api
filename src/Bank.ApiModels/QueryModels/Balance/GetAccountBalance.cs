@@ -14,6 +14,9 @@ namespace Bank.ApiModels.QueryModels.Balance
         }
 
         public class Response : BaseResponse
-        { }
+        {
+            public int Id { get; set; }
+            public decimal Balance { get; set; }
+        }
     }
 }

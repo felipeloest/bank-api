@@ -8,7 +8,6 @@ namespace Bank.ApiModels
 {
     public abstract class BaseResponse
     {
-        public int StatusCode { get; set; }
-        public dynamic? Data { get; set; }
+        public bool Success { get; set; }
     }
 }

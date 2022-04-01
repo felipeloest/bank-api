@@ -15,14 +15,15 @@ namespace Bank.Application.CommandStack
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
         }
 
-        public async Task<CreateAccount.Response> CreateAsync(CreateAccount.Request request)
+        public async Task<InsertBalance.Response> CreateAsync(InsertBalance.Request request)
         {
-            var response = new CreateAccount.Response();
-            var result = new Account { Balance = request.InitialBalance, Id = request.Id };
-            await _accountRepository.CreateAsync(result);
+            var response = new InsertBalance.Response();
+            var item = new Account { Balance = request.Amount, Id = request.Id };
+            response.Success = await _accountRepository.CreateAsync(item);
 
-            response.StatusCode = 201;
-            response.Data = new { result.Balance };
+            response.Balance = item.Balance;
+            response.Id = item.Id;
+
             return response;
         }
 
@@ -32,32 +33,33 @@ namespace Bank.Application.CommandStack
             var result = await _accountRepository.FindAsync(request.Id);
             if (result == null)
             {
-                var account = await CreateAsync(new CreateAccount.Request { Id = request.Id, InitialBalance = request.Amount });
-
-                response.StatusCode = 201;
-                response.Data = new { account.Balance };
-                return response;
+                var account = await CreateAsync(request);
+                return account;
             }
 
             result.Balance += request.Amount;
 
-            await _accountRepository.UpdateAsync(result);
+            response.Success = await _accountRepository.UpdateAsync(result);
 
-            response.StatusCode = 201;
-            response.Data = new { result.Balance };
+            response.Balance = result.Balance;
+            response.Id = result.Id;
+
             return response;
         }
 
         public async Task<GetAccountBalance.Response> GetBalanceAsync(GetAccountBalance.Request request)
         {
-            var resposse = new GetAccountBalance.Response { StatusCode = 200 };
+            var resposse = new GetAccountBalance.Response();
             var result = await _accountRepository.FindAsync(request.Id);
             if (result == null)
             {
-                resposse.StatusCode = 404;
+                resposse.Success = false;
+                return resposse;
             }
 
-            resposse.Data = result?.Balance ?? 0;
+            resposse.Success = true;
+            resposse.Id = request.Id;
+            resposse.Balance = result?.Balance ?? 0;
             return resposse;
         }
     }

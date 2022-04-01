@@ -1,6 +1,9 @@
 ﻿using Bank.ApiModels.CommandModels.Event;
 using Bank.Application.CommandStack.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,14 +21,18 @@ namespace Bank.WebApi.Controllers
         }
 
         [HttpPost]
-        [Produces("text/plain")]
         public async Task<IActionResult> PostAsync([FromBody] Event request)
         {
             if (request == null)
                 return BadRequest();
 
             var response = await _appService.DepositAsync(new InsertBalance.Request { Id = request.Destination, Amount = request.Amount });
-            return StatusCode(response.StatusCode, response.Data);
+            if (response.Success)
+            {
+                return StatusCode(201, new { destination = new { id = response.Id, balance = response.Balance } });
+            }
+
+            return Forbid();
         }
     }
 }
