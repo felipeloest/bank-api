@@ -62,9 +62,10 @@ namespace Bank.Data.Domain
 
         public async Task<bool> Reset(CancellationToken cancellationToken = default)
         {
-            var items = await _dbSet.ToListAsync();
+            var items = await _dbSet.ToListAsync(cancellationToken);
             _dbSet.RemoveRange(items);
-            _dbSet.Add(new Account { Id = 300, Balance = 0 });
+
+            await _dbSet.AddAsync(new Account { Id = 300, Balance = 0 }, cancellationToken);
 
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }

@@ -1,9 +1,6 @@
 ﻿using Bank.ApiModels.CommandModels.Event;
 using Bank.Application.CommandStack.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

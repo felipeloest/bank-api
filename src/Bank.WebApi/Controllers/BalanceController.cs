@@ -24,7 +24,7 @@ namespace Bank.WebApi.Controllers
                 return BadRequest();
 
             var response = await _appService.GetBalanceAsync(new GetAccountBalance.Request { Id = account_id.Value });
-            if(response.Success)
+            if (response.Success)
                 return Ok(response.Balance);
 
             return NotFound(0);

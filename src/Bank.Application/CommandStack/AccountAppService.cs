@@ -91,7 +91,7 @@ namespace Bank.Application.CommandStack
 
             response.TargetId = target.Id;
             response.TargetBalance = target.Balance;
-            
+
 
             return response;
         }

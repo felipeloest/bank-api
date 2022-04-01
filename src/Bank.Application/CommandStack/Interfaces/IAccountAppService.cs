@@ -9,6 +9,6 @@ namespace Bank.Application.CommandStack.Interfaces
         Task<Deposit.Response> DepositAsync(Deposit.Request request);
 
         Task<Withdraw.Response> WithdrawAsync(Withdraw.Request request);
-        Task<Transfer.Response> TransferAsync(Transfer.Request request); 
+        Task<Transfer.Response> TransferAsync(Transfer.Request request);
     }
 }
