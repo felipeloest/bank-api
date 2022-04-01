@@ -26,13 +26,36 @@ namespace Bank.WebApi.Controllers
             if (request == null)
                 return BadRequest();
 
-            var response = await _appService.DepositAsync(new InsertBalance.Request { Id = request.Destination, Amount = request.Amount });
-            if (response.Success)
+            switch (request.Type)
             {
-                return StatusCode(201, new { destination = new { Id = response.Id.ToString(), Balance = response.Balance } });
-            }
+                case "deposit":
+                    {
+                        var response = await _appService.DepositAsync(new Deposit.Request { Id = request.Destination, Amount = request.Amount });
+                        if (!response.Success)
+                            return NotFound(0);
 
-            return Forbid();
+                        return StatusCode(201, new { destination = new { Id = response.Id.ToString(), Balance = response.Balance } });
+
+                    }
+                case "withdraw":
+                    {
+                        var response = await _appService.WithdrawAsync(new Withdraw.Request { Id = request.Origin, Amount = request.Amount });
+                        if (!response.Success)
+                            return NotFound(0);
+
+                        return StatusCode(201, new { origin = new { Id = response.Id.ToString(), Balance = response.Balance } });
+                    }
+                case "transfer":
+                    {
+                        var response = await _appService.TransferAsync(new Transfer.Request { SourceId = request.Origin, Amount = request.Amount, TargetId = request.Destination });
+                        if (!response.Success)
+                            return NotFound(0);
+
+                        return StatusCode(201, new { origin = new { Id = response.SourceId.ToString(), Balance = response.SourceBalance }, destination = new { Id = response.TargetId.ToString(), Balance = response.TargetBalance } });
+                    }
+                default:
+                    return NotFound(0);
+            }
         }
     }
 }

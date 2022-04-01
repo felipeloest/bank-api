@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bank.ApiModels.CommandModels.Event
 {
-    public class InsertBalance
+    public class Deposit
     {
         public class Request
         {

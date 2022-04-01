@@ -16,7 +16,7 @@ namespace Bank.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-            modelBuilder.UseSeed();
+
             base.OnModelCreating(modelBuilder);
         }
     }

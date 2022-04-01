@@ -64,6 +64,7 @@ namespace Bank.Data.Domain
         {
             var items = await _dbSet.ToListAsync();
             _dbSet.RemoveRange(items);
+            _dbSet.Add(new Account { Id = 300, Balance = 0 });
 
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }

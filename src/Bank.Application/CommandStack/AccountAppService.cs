@@ -15,9 +15,9 @@ namespace Bank.Application.CommandStack
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
         }
 
-        public async Task<InsertBalance.Response> CreateAsync(InsertBalance.Request request)
+        public async Task<Deposit.Response> CreateAsync(Deposit.Request request)
         {
-            var response = new InsertBalance.Response();
+            var response = new Deposit.Response();
             var item = new Account { Balance = request.Amount, Id = request.Id };
             response.Success = await _accountRepository.CreateAsync(item);
 
@@ -27,9 +27,9 @@ namespace Bank.Application.CommandStack
             return response;
         }
 
-        public async Task<InsertBalance.Response> DepositAsync(InsertBalance.Request request)
+        public async Task<Deposit.Response> DepositAsync(Deposit.Request request)
         {
-            var response = new InsertBalance.Response();
+            var response = new Deposit.Response();
             var result = await _accountRepository.FindAsync(request.Id);
             if (result == null)
             {
@@ -61,6 +61,59 @@ namespace Bank.Application.CommandStack
             resposse.Id = request.Id;
             resposse.Balance = result?.Balance ?? 0;
             return resposse;
+        }
+
+        public async Task<Transfer.Response> TransferAsync(Transfer.Request request)
+        {
+            var response = new Transfer.Response();
+            var source = await _accountRepository.FindAsync(request.SourceId);
+            if (source == null)
+            {
+                response.Success = false;
+                return response;
+            }
+
+            var target = await _accountRepository.FindAsync(request.TargetId);
+            if (target == null)
+            {
+                response.Success = false;
+                return response;
+            }
+
+            source.Balance -= request.Amount;
+            target.Balance += request.Amount;
+
+            response.Success = await _accountRepository.UpdateAsync(source);
+            response.Success = await _accountRepository.UpdateAsync(target);
+
+            response.SourceId = source.Id;
+            response.SourceBalance = source.Balance;
+
+            response.TargetId = target.Id;
+            response.TargetBalance = target.Balance;
+            
+
+            return response;
+        }
+
+        public async Task<Withdraw.Response> WithdrawAsync(Withdraw.Request request)
+        {
+            var response = new Withdraw.Response();
+            var result = await _accountRepository.FindAsync(request.Id);
+            if (result == null)
+            {
+                response.Success = false;
+                return response;
+            }
+
+            result.Balance -= request.Amount;
+
+            response.Success = await _accountRepository.UpdateAsync(result);
+
+            response.Balance = result.Balance;
+            response.Id = result.Id;
+
+            return response;
         }
     }
 }
