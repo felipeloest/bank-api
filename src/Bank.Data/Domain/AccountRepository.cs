@@ -37,7 +37,7 @@ namespace Bank.Data.Domain
             try
             {
                 await _dbSet.AddAsync(aggregate, cancellationToken);
-                return await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -46,12 +46,12 @@ namespace Bank.Data.Domain
             }
         }
 
-        public async Task<int> UpdateAsync(Account aggregate)
+        public async Task<int> UpdateAsync(Account aggregate, CancellationToken cancellationToken = default)
         {
             try
             {
                 _dbSet.Update(aggregate);
-                return await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -60,15 +60,12 @@ namespace Bank.Data.Domain
             }
         }
 
-        public async Task<int> DeleteAsync(Account aggregate)
+        public async Task<int> Reset(CancellationToken cancellationToken = default)
         {
-            _dbSet.Remove(aggregate);
-            return await _context.SaveChangesAsync();
-        }
+            var items = await _dbSet.ToListAsync();
+            _dbSet.RemoveRange(items);
 
-        public Task<IList<Account>> GetAllAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

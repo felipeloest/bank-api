@@ -17,7 +17,7 @@ namespace Bank.WebApi.Controllers
             _appService = appService ?? throw new ArgumentNullException(nameof(appService));
         }
 
-        [HttpGet("{account_id}")]
+        [HttpGet()]
         public async Task<IActionResult> Get(int? account_id)
         {
             if (account_id == null)

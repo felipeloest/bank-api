@@ -10,6 +10,5 @@ namespace Bank.ApiModels
     {
         public int StatusCode { get; set; }
         public dynamic? Data { get; set; }
-
     }
 }

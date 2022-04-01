@@ -18,6 +18,7 @@ namespace Bank.WebApi.Controllers
         }
 
         [HttpPost]
+        [Produces("text/plain")]
         public async Task<IActionResult> PostAsync([FromBody] Event request)
         {
             if (request == null)
@@ -25,7 +26,6 @@ namespace Bank.WebApi.Controllers
 
             var response = await _appService.DepositAsync(new InsertBalance.Request { Id = request.Destination, Amount = request.Amount });
             return StatusCode(response.StatusCode, response.Data);
-
         }
     }
 }

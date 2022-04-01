@@ -1,12 +1,20 @@
 ﻿using Bank.Application.CommandStack.Interfaces;
+using Bank.Domain.Repositories;
 
 namespace Bank.Application.CommandStack
 {
     public class ResetAppService : IResetAppService
     {
-        public Task ResetAsync()
+        private readonly IAccountRepository _accountRepository;
+
+        public ResetAppService(IAccountRepository accountRepository)
         {
-            return Task.CompletedTask;
+            _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+        }
+
+        public async Task ResetAsync()
+        {
+            await _accountRepository.Reset();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Bank.ApiModels.CommandModels.Event;
 using Bank.ApiModels.QueryModels.Balance;
 using Bank.Application.CommandStack.Interfaces;
+using Bank.Domain;
 using Bank.Domain.Repositories;
 
 namespace Bank.Application.CommandStack
@@ -14,15 +15,27 @@ namespace Bank.Application.CommandStack
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
         }
 
+        public async Task<CreateAccount.Response> CreateAsync(CreateAccount.Request request)
+        {
+            var response = new CreateAccount.Response();
+            var result = new Account { Balance = request.InitialBalance, Id = request.Id };
+            await _accountRepository.CreateAsync(result);
+
+            response.StatusCode = 201;
+            response.Data = new { result.Balance };
+            return response;
+        }
+
         public async Task<InsertBalance.Response> DepositAsync(InsertBalance.Request request)
         {
             var response = new InsertBalance.Response();
             var result = await _accountRepository.FindAsync(request.Id);
             if (result == null)
             {
-                response.StatusCode = 404;
-                response.Data = 0;
+                var account = await CreateAsync(new CreateAccount.Request { Id = request.Id, InitialBalance = request.Amount });
 
+                response.StatusCode = 201;
+                response.Data = new { account.Balance };
                 return response;
             }
 
@@ -37,18 +50,14 @@ namespace Bank.Application.CommandStack
 
         public async Task<GetAccountBalance.Response> GetBalanceAsync(GetAccountBalance.Request request)
         {
-            var resposse = new GetAccountBalance.Response();
+            var resposse = new GetAccountBalance.Response { StatusCode = 200 };
             var result = await _accountRepository.FindAsync(request.Id);
             if (result == null)
             {
                 resposse.StatusCode = 404;
-                resposse.Data = 0;
-
-                return resposse;
             }
 
-            resposse.StatusCode = 200;
-            resposse.Data = new { result.Balance };
+            resposse.Data = result?.Balance ?? 0;
             return resposse;
         }
     }

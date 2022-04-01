@@ -17,7 +17,6 @@ namespace Bank.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             modelBuilder.UseSeed();
-
             base.OnModelCreating(modelBuilder);
         }
     }
