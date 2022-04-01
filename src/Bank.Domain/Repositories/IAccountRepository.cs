@@ -12,8 +12,8 @@ namespace Bank.Domain.Repositories
 
         Task<IList<Account>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Task SaveAsync(Account aggregate, CancellationToken cancellationToken = default);
+        Task<int> CreateAsync(Account aggregate, CancellationToken cancellationToken = default);
 
-        Task UpdateAsync(Account aggregate);
+        Task<int> UpdateAsync(Account aggregate);
     }
 }

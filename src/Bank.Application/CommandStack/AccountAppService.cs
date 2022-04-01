@@ -1,4 +1,5 @@
-﻿using Bank.ApiModels.QueryModels.Balance;
+﻿using Bank.ApiModels.CommandModels.Event;
+using Bank.ApiModels.QueryModels.Balance;
 using Bank.Application.CommandStack.Interfaces;
 using Bank.Domain.Repositories;
 
@@ -13,6 +14,27 @@ namespace Bank.Application.CommandStack
             _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
         }
 
+        public async Task<InsertBalance.Response> DepositAsync(InsertBalance.Request request)
+        {
+            var response = new InsertBalance.Response();
+            var result = await _accountRepository.FindAsync(request.Id);
+            if (result == null)
+            {
+                response.StatusCode = 404;
+                response.Data = 0;
+
+                return response;
+            }
+
+            result.Balance += request.Amount;
+
+            await _accountRepository.UpdateAsync(result);
+
+            response.StatusCode = 201;
+            response.Data = new { result.Balance };
+            return response;
+        }
+
         public async Task<GetAccountBalance.Response> GetBalanceAsync(GetAccountBalance.Request request)
         {
             var resposse = new GetAccountBalance.Response();
@@ -21,9 +43,11 @@ namespace Bank.Application.CommandStack
             {
                 resposse.StatusCode = 404;
                 resposse.Data = 0;
+
                 return resposse;
             }
 
+            resposse.StatusCode = 200;
             resposse.Data = new { result.Balance };
             return resposse;
         }

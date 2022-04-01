@@ -7,62 +7,63 @@ namespace Bank.Data.Domain
 {
     public class AccountRepository : IAccountRepository
     {
-        protected readonly ILogger<AccountRepository> Logger;
-        protected Context Context { get; }
-        protected DbSet<Account> DbSet { get; }
+        protected readonly ILogger<AccountRepository> _logger;
+        protected Context _context { get; }
+        protected DbSet<Account> _dbSet { get; }
 
 
         public AccountRepository(Context context, ILogger<AccountRepository> logger)
         {
-            Logger = logger;
-            Context = context;
-            DbSet = Context.Set<Account>();
+            _logger = logger;
+            _context = context;
+            _dbSet = _context.Set<Account>();
         }
 
         public virtual async Task<Account?> FindAsync(int id)
         {
             try
             {
-                return await DbSet.FindAsync(id);
+                return await _dbSet.FindAsync(id);
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
 
-        public virtual async Task SaveAsync(Account aggregate, CancellationToken cancellationToken = default)
+        public async Task<int> CreateAsync(Account aggregate, CancellationToken cancellationToken = default)
         {
             try
             {
-                await DbSet.AddAsync(aggregate, cancellationToken);
+                await _dbSet.AddAsync(aggregate, cancellationToken);
+                return await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
 
-        public virtual Task UpdateAsync(Account aggregate)
+        public async Task<int> UpdateAsync(Account aggregate)
         {
             try
             {
-                DbSet.Update(aggregate);
-                return Task.CompletedTask;
+                _dbSet.Update(aggregate);
+                return await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
 
-        public Task DeleteAsync(Account aggregate)
+        public async Task<int> DeleteAsync(Account aggregate)
         {
-            DbSet.Remove(aggregate);
-            return Task.CompletedTask;
+            _dbSet.Remove(aggregate);
+            return await _context.SaveChangesAsync();
         }
 
         public Task<IList<Account>> GetAllAsync(CancellationToken cancellationToken = default)
