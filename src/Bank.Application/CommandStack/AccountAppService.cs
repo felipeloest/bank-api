@@ -17,11 +17,14 @@ namespace Bank.Application.CommandStack
         {
             var resposse = new GetAccountBalance.Response();
             var result = await _accountRepository.FindAsync(request.Id);
-            if(result == null)
+            if (result == null)
             {
+                resposse.StatusCode = 404;
+                resposse.Data = 0;
                 return resposse;
             }
-            
+
+            resposse.Data = new { result.Balance };
             return resposse;
         }
     }
