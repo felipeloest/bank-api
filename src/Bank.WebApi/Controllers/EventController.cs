@@ -29,7 +29,7 @@ namespace Bank.WebApi.Controllers
             var response = await _appService.DepositAsync(new InsertBalance.Request { Id = request.Destination, Amount = request.Amount });
             if (response.Success)
             {
-                return StatusCode(201, new { destination = new { id = response.Id, balance = response.Balance } });
+                return StatusCode(201, new { destination = new { Id = response.Id.ToString(), Balance = response.Balance } });
             }
 
             return Forbid();
